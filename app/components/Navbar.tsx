@@ -25,7 +25,7 @@ const Navbar = async () => {
                 <>
                 {/* if logged in  */}
                     <Link href="/startup/create">
-                        <span>create</span>
+                        <span>Create</span>
                     </Link> 
                     
                     {/* we cant use onClick event handler as its for browser interactivity and its a serevr componnet */}
