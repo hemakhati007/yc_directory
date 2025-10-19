@@ -62,7 +62,7 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
       <Link href={`/startup/${_id}`}>
         <p className="startup_card_desc">{description}</p>
         <Image
-          src={image}
+          src={image || "/placeholder.png"}
           alt="startup image"
           width={600}
           height={320}
