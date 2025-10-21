@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import React from 'react'
-import { auth, signOut,signIn} from '@/auth';
+import { auth, signOut, signIn } from '@/auth';
+
 //import from @/auth is import serevr component 
 //if we import from next-auth/react they will client 
 //we want teh whole navbar to be server componnet
