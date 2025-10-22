@@ -50,13 +50,15 @@ const StartupCard = ({ post }: { post: StartupTypeCard }) => {
         </div>
         <Link href={`/user/${author?.id}`}>
           {/* need to configue the palcehold.co <Image> component doesn’t allow external images unless you explicitly allow their domains in next.config.js.   */}
-          <Image
-            src="https://placehold.co/48x48"
-            alt="placeholder"
-            width={48}
-            height={48}
-            className="rounded-full"
-          />
+          {author?.image && (
+            <Image
+              src={author.image}
+              alt={author.name || "Author"}
+              width={48}
+              height={48}
+              className="rounded-full"
+            />
+          )}
         </Link>
       </div>
       <Link href={`/startup/${_id}`}>

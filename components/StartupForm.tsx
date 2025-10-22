@@ -14,6 +14,7 @@ import { z } from 'zod';
 // error by toaset in top most layout
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { createPitch } from "@/lib/actions";
 
 
 
@@ -40,18 +41,20 @@ const StartupForm = () => {
         };
 
         await formSchema.parseAsync(formValues);
-        // const result= await createIdea(prevState, formData, pitch);
+        const result= await createPitch(prevState, formData, pitch);
         // console.log(result);
           console.log(formValues);
 
         // if success
-       
-        // toast.success("Your startup pitch has been created successfully");
-        //   // route to created startup page
+        if (result.status == "SUCCESS") {
+            toast.success("Your startup pitch has been created successfully");
+            //   // route to created startup page
 
-        //   router.push(`/startup/${result.id}`);
+            router.push(`/startup/${result._id}`);
+       }
+       
         // }
-        // return result;
+        return result;
       } catch (error) {
           if (error instanceof z.ZodError) {
               const fieldErrors = error.flatten().fieldErrors;
