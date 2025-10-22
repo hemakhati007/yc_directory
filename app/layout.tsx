@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 
 import 'easymde/dist/easymde.min.css';
+import { Toaster } from "@/components/ui/sonner";
 //the additional css for markdown plugin
 
 const workSans=localFont({
@@ -67,6 +68,9 @@ export default function RootLayout({
         className={workSans.variable}
       >
         {children}
+
+        <Toaster />
+        
       </body>
     </html>
   );

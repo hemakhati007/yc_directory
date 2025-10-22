@@ -1,3 +1,4 @@
+import { auth } from "@/auth";
 import SearchForm from "@/components/SearchForm";
 import StartupCard,{StartupTypeCard} from "@/components/StartupCard";
 // import { client } from "@/sanity/lib/client";
@@ -15,11 +16,20 @@ export default async function Home({searchParams}:{searchParams:Promise<{query?:
   
   const params = { search: query || null };
 
+  //extracting session to create a session for the user
+  const session = await auth();
+  console.log(session?.id);
+  //it can possible null typscript complain-->define a typscript module at next-auth.d.ts
+  //by this session will know it have a id
+  //if youre logged in already it will be undefiend
+
+  //we may not be able to see it even after logged out bcz its cached  for 60sec make usecdn false by withConfig
+ 
 
   
   // const posts = await client.fetch(STARTUPS_QUERY);
   const { data: posts } = await sanityFetch({ query: STARTUPS_QUERY, params });
-  console.log(JSON.stringify(posts,null,2));
+  // console.log(JSON.stringify(posts,null,2));
  
 
   return (

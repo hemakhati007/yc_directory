@@ -62,21 +62,27 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
 
           <h3 className="text-30-bold">Pitch Details</h3>
-        { /* pitch details comes in markdown format to convert markdown format to html string
+          {/* pitch details comes in markdown format to convert markdown format to html string
             intall package markdown-it
          */}
           {/* react escape any html to prevent from Xss attack dangerouslySetInnerHTML indicate content safe */}
-          {parsedContent?(<article dangerouslySetInnerHTML={{__html: parsedContent}} className="prose max-w-4xl font-work-sans break-all"/>):( <p className="no-result">No details provided</p>)}
+          {parsedContent ? (
+            <article
+              dangerouslySetInnerHTML={{ __html: parsedContent }}
+              className="prose max-w-4xl font-work-sans break-all"
+            />
+          ) : (
+            <p className="no-result">No details provided</p>
+          )}
         </div>
 
-        <hr className="divider" />
-        
         {/* TODO: EDITOR SELECTED STATUPS */}
       </section>
+      <hr className="divider" />
 
       {/* dynamic content ppr */}
       {/* real time update */}
-      <Suspense fallback={<Skeleton className="view_skeleton"/>}>
+      <Suspense fallback={<Skeleton className="view_skeleton" />}>
         {/* from react allowing a fallback in case we cannot render the dynamic content  */}
         {/* render a dynmic componnet */}
         <View id={id} />
