@@ -1,6 +1,6 @@
 import { formatDate } from "@/lib/utils";
 import { client } from "@/sanity/lib/client";
-import { STARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
+import { PLAYLIST_BY_SLUG_QUERY, STARTUP_BY_ID_QUERY } from "@/sanity/lib/queries";
 import { notFound } from "next/navigation";
 
 import Image from "next/image";
@@ -11,12 +11,21 @@ const md = markdownit();
 
 import { Skeleton } from "@/components/ui/skeleton";
 import View from "@/components/View";
+import StartupCard, { StartupTypeCard } from "@/components/StartupCard";
 export const experimental_ppr = true;
 
 const page = async ({ params }: { params: Promise<{ id: string }> }) => {
   const id = (await params).id;
-  const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
+  //sequetial data fetching first the current startup then editors pick
+  // const post = await client.fetch(STARTUP_BY_ID_QUERY, { id });
+  // // if second request do not depend in first then make it parallel
+  // const { select: editorPosts } = await client.fetch(PLAYLIST_BY_SLUG_QUERY, { slug: 'editor-s-pick' });
   
+  const [post, {select:editorPosts}] = await Promise.all([
+    client.fetch(STARTUP_BY_ID_QUERY, { id }),
+    client.fetch(PLAYLIST_BY_SLUG_QUERY, { slug: "editor-s-pick" }),
+  ]);
+
   if (!post) return notFound();
   const parsedContent = md.render(post?.pitch || "");
   
@@ -74,19 +83,34 @@ const page = async ({ params }: { params: Promise<{ id: string }> }) => {
           ) : (
             <p className="no-result">No details provided</p>
           )}
+          <Suspense fallback={<Skeleton className="view_skeleton" />}>
+            {/* from react allowing a fallback in case we cannot render the dynamic content  */}
+            {/* render a dynmic componnet */}
+            <View id={id} />
+          </Suspense>
         </div>
 
         {/* TODO: EDITOR SELECTED STATUPS */}
+
       </section>
+
       <hr className="divider" />
+
+      {editorPosts?.length > 0 && (
+        <div className="max-w-4xl mx-auto">
+          <p className="text-30-semibold">Editors picks</p>
+          <ul className="mt-7 card_grid-sm">
+            {editorPosts.map((post: StartupTypeCard, i: number) => (
+              <StartupCard key={i} post={post}/>
+            ))}
+          </ul>
+        </div>
+      )
+
+      }
 
       {/* dynamic content ppr */}
       {/* real time update */}
-      <Suspense fallback={<Skeleton className="view_skeleton" />}>
-        {/* from react allowing a fallback in case we cannot render the dynamic content  */}
-        {/* render a dynmic componnet */}
-        <View id={id} />
-      </Suspense>
     </>
   );
 }

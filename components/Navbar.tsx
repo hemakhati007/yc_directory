@@ -1,6 +1,8 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { auth, signOut, signIn } from '@/auth';
+import { BadgePlus, LogOut } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@radix-ui/react-avatar';
 
 //import from @/auth is import serevr component 
 //if we import from next-auth/react they will client 
@@ -13,57 +15,63 @@ const Navbar = async () => {
     <header className="px-5 py-3 bg-white shadow-sm font-work-sans">
       <nav className="flex justify-between items-center">
         <Link href="/">
-            <Image src="/logo.png" alt="Logo" width={144} height={30} />
+          <Image src="/logo.png" alt="Logo" width={144} height={30} />
         </Link>
 
-        <div className='flex items-center gap-5 text-black'>
-            {/* render thigs is user is logged in  how can we know if use is loggedIn 
+        <div className="flex items-center gap-5 text-black">
+          {/* render thigs is user is logged in  how can we know if use is loggedIn 
             ->look into a user session comming directly from nextAuth
             */}
 
-            {session &&  session.user ? (
-                <>
-                {/* if logged in  */}
-                    <Link href="/startup/create">
-                        <span>Create</span>
-                    </Link> 
-                    
-                    {/* we cant use onClick event handler as its for browser interactivity and its a serevr componnet */}
-                    {/* Server Actions to trigger sigin/signOut without needing client componnet onClick */}
-                    <form action={async()=>{
-                        "use server";
-                         await signOut({redirectTo:"/"});
-                        }}>
+          {session && session.user ? (
+            <>
+              {/* if logged in  */}
+              <Link href="/startup/create">
+                <span className="max-sm:hidden">Create</span>
+                <BadgePlus className="size-6 sm:hidden" />
+              </Link>
 
-                        <button type="submit">LogOut</button>
-                    </form>
-                    {/* serevr action runs through form submissins 
+              {/* we cant use onClick event handler as its for browser interactivity and its a serevr componnet */}
+              {/* Server Actions to trigger sigin/signOut without needing client componnet onClick */}
+              <form
+                action={async () => {
+                  "use server";
+                  await signOut({ redirectTo: "/" });
+                }}
+              >
+                <button type="submit">
+                  <span className="max-sm:hidden">LogOut</span>
+                  <LogOut className='size-6 sm:hidden text-red-500'/>
+                </button>
+              </form>
+              {/* serevr action runs through form submissins 
                       ->action prop points to async server function 
                       ->use server tells execute it on server
                       ->button of type submit makes POST req to that action -->no client js need 
                     */}
 
-                    <Link href={`/user/${session?.user?.id}`}>
-                    <span>{session?.user?.name}</span></Link>
-                </>
-             ):(
-                <form action={async()=>
-                    { 
-                        'use server';
-                         await signIn('github')}
-                 }>
-                  
-                <button type='submit'>
-                Login
-                </button>
-                </form>
-             )}    
-
-
+              <Link href={`/user/${session?.user?.id}`}>
+                {/* <Avatar className='size-3'>
+                  <AvatarImage src={session?.user?.image || ''} alt={session?.user?.name || ''} />
+                  <AvatarFallback>AV</AvatarFallback>
+                </Avatar> */}
+                <span>{session?.user?.name}</span>
+              </Link>
+            </>
+          ) : (
+            <form
+              action={async () => {
+                "use server";
+                await signIn("github");
+              }}
+            >
+              <button type="submit">Login</button>
+            </form>
+          )}
         </div>
       </nav>
     </header>
-  )
+  );
 }
 
 export default Navbar

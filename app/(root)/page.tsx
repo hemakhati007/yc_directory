@@ -7,6 +7,7 @@ import { STARTUPS_QUERY } from "@/sanity/lib/queries";
 
 
 
+
 export default async function Home({searchParams}:{searchParams:Promise<{query?:string}>}) {
 
   //acccess quesry from search params
@@ -62,9 +63,9 @@ export default async function Home({searchParams}:{searchParams:Promise<{query?:
             <p className="no-results">No Startups Found</p>
           )}
         </ul>
+  
       </section>
-
-      <SanityLive/>
+      <SanityLive />
     </>
   );
 }
